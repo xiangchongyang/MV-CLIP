@@ -1,0 +1,788 @@
+2024-11-27 11:20:38,753 transreid INFO: Namespace(config_file='configs/person/mv_clipreid.yml', opts=['TEST.WEIGHT', 'log/uniform_mask/ViT-B-16_120.pth'])
+2024-11-27 11:20:38,753 transreid INFO: Loaded configuration file configs/person/vit_clipreid.yml
+2024-11-27 11:20:38,753 transreid INFO: 
+MODEL:
+  PRETRAIN_CHOICE: 'imagenet'
+  METRIC_LOSS_TYPE: 'triplet'
+  IF_LABELSMOOTH: 'on'
+  IF_WITH_CENTER: 'no'
+  NAME: 'ViT-B-16'
+  STRIDE_SIZE: [16, 16]
+  ID_LOSS_WEIGHT : 0.25  # ID LOSS
+  TRIPLET_LOSS_WEIGHT : 1.0 # Triplet LOSS
+  I2T_LOSS_WEIGHT : 1.0 # i2t_ce_loss
+  I2T_WEIGHT: 1.0 # i2t_loss
+  T2I_WEIGHT: 1.0 # t2i_loss
+  VIFI_WEIGHT : ''
+  USE_VIFI_WEIGHT : False
+  PBP_CAMERA: False
+  USE_ADAPTER: False
+
+INPUT:
+  SIZE_TRAIN: [256, 128]
+  SIZE_TEST: [256, 128]
+  PROB: 0.5 # random horizontal flip
+  RE_PROB: 0.5 # random erasing
+  PADDING: 10
+  PIXEL_MEAN: [0.485, 0.456, 0.406]
+  PIXEL_STD: [0.229, 0.224, 0.225]
+
+DATALOADER:
+  SAMPLER: 'softmax_triplet'
+  NUM_INSTANCE: 4
+  NUM_WORKERS: 8
+  SEQ_LEN: 8
+  P: 4
+  K: 4
+  # P: 2
+  # K: 2
+  NUM_TEST_IMAGES: 8
+  NUM_TRAIN_IMAGES: 8
+SOLVER:
+  STAGE1:
+    IMS_PER_BATCH: 64
+    OPTIMIZER_NAME: "Adam"
+    BASE_LR: 0.00035
+    WARMUP_LR_INIT: 0.00001
+    LR_MIN: 1e-6
+    WARMUP_METHOD: 'linear'
+    WEIGHT_DECAY: 1e-4
+    WEIGHT_DECAY_BIAS: 1e-4
+    MAX_EPOCHS: 120
+    CHECKPOINT_PERIOD: 120
+    LOG_PERIOD: 10
+    WARMUP_EPOCHS: 5
+
+  STAGE2:
+    IMS_PER_BATCH: 16
+    OPTIMIZER_NAME: "Adam"
+    BASE_LR: 0.000005
+    WARMUP_METHOD: 'linear'
+    WARMUP_ITERS: 10
+    WARMUP_FACTOR: 0.1
+    WEIGHT_DECAY:  0.00025
+    WEIGHT_DECAY_BIAS: 0.0001
+    LARGE_FC_LR: False
+    MAX_EPOCHS: 120
+    CHECKPOINT_PERIOD: 120
+    LOG_PERIOD: 50
+    EVAL_PERIOD: 10
+    BIAS_LR_FACTOR: 2
+
+    STEPS: [60, 90]
+    GAMMA: 0.1
+
+TEST:
+  EVAL: True
+  IMS_PER_BATCH: 8
+  RE_RANKING: False
+  WEIGHT: ''
+  NECK_FEAT: 'before'
+  FEAT_NORM: 'yes'
+  ALL_FRAMES: False
+  DISTANCE: 'cosine'
+
+DATASETS:
+DATASETS:
+  NAMES: ('ilidsvid')
+  ROOT_DIR: ('/DATACENTER1/data/reid/iLIDS-VID')
+OUTPUT_DIR: 'output/120epoch/ilidsvid'
+
+
+2024-11-27 11:20:38,753 transreid INFO: Running with config:
+DATALOADER:
+  NUM_INSTANCE: 4
+  NUM_WORKERS: 8
+  SAMPLER: softmax_triplet
+  SEQ_LEN: 8
+DATASETS:
+  NAMES: ilidsvid
+  ROOT_DIR: /DATACENTER1/data/reid/iLIDS-VID
+INPUT:
+  PADDING: 10
+  PIXEL_MEAN: [0.485, 0.456, 0.406]
+  PIXEL_STD: [0.229, 0.224, 0.225]
+  PROB: 0.5
+  RE_PROB: 0.5
+  SIZE_TEST: [256, 128]
+  SIZE_TRAIN: [256, 128]
+MODEL:
+  ADAPTER_ALPHA: 4
+  ADAPTER_TYPE: dat
+  ATT_DROP_RATE: 0.0
+  ATT_TYPE: ['c2c', 'o2o']
+  COS_LAYER: False
+  DEVICE: cuda
+  DEVICE_ID: 0
+  DIST_TRAIN: False
+  DROP_OUT: 0.0
+  DROP_PATH: 0.1
+  FUSION_HEAD_NUM: 12
+  FUSION_LAYER_NUM: 2
+  I2T_LOSS_WEIGHT: 1.0
+  I2T_WEIGHT: 1.0
+  ID_LOSS_TYPE: softmax
+  ID_LOSS_WEIGHT: 0.25
+  IF_LABELSMOOTH: on
+  IF_WITH_CENTER: no
+  LAST_STRIDE: 1
+  METRIC_LOSS_TYPE: triplet
+  NAME: ViT-B-16
+  NECK: bnneck
+  NO_MARGIN: False
+  PBP_CAMERA: False
+  PBP_COE: 3.0
+  PBP_PROMPT_DEEP: 9
+  PBP_PROMPT_LEN: 1
+  PBP_VIEW: False
+  PRETRAIN_CHOICE: imagenet
+  PRETRAIN_PATH: 
+  PROMPT_LEN: 8
+  STRIDE_SIZE: [16, 16]
+  T2I_WEIGHT: 1.0
+  TRANSFORMER_TYPE: None
+  TRIPLET_LOSS_WEIGHT: 1.0
+  VIFI_WEIGHT: 
+OUTPUT_DIR: output/120epoch/ilidsvid
+SOLVER:
+  MARGIN: 0.3
+  SEED: 1234
+  STAGE1:
+    BASE_LR: 0.00035
+    CHECKPOINT_PERIOD: 120
+    COSINE_MARGIN: 0.5
+    COSINE_SCALE: 30
+    EVAL_PERIOD: 10
+    IMS_PER_BATCH: 64
+    LOG_PERIOD: 10
+    LR_MIN: 1e-06
+    MAX_EPOCHS: 120
+    MOMENTUM: 0.9
+    OPTIMIZER_NAME: Adam
+    WARMUP_EPOCHS: 5
+    WARMUP_FACTOR: 0.01
+    WARMUP_ITERS: 500
+    WARMUP_LR_INIT: 1e-05
+    WARMUP_METHOD: linear
+    WEIGHT_DECAY: 0.0001
+    WEIGHT_DECAY_BIAS: 0.0001
+  STAGE2:
+    BASE_LR: 5e-06
+    BIAS_LR_FACTOR: 2
+    CENTER_LOSS_WEIGHT: 0.0005
+    CENTER_LR: 0.5
+    CHECKPOINT_PERIOD: 120
+    COSINE_MARGIN: 0.5
+    COSINE_SCALE: 30
+    EVAL_PERIOD: 10
+    GAMMA: 0.1
+    IMS_PER_BATCH: 16
+    LARGE_FC_LR: False
+    LOG_PERIOD: 50
+    LR_MIN: 1.6e-05
+    MAX_EPOCHS: 120
+    MOMENTUM: 0.9
+    OPTIMIZER_NAME: Adam
+    STEPS: (60, 90)
+    WARMUP_EPOCHS: 5
+    WARMUP_FACTOR: 0.1
+    WARMUP_ITERS: 10
+    WARMUP_LR_INIT: 0.01
+    WARMUP_METHOD: linear
+    WEIGHT_DECAY: 0.00025
+    WEIGHT_DECAY_BIAS: 0.0001
+TEST:
+  ALL_FRAMES: False
+  DISTANCE: cosine
+  DIST_MAT: dist_mat.npy
+  EVAL: True
+  FEAT_NORM: yes
+  IMS_PER_BATCH: 8
+  NECK_FEAT: before
+  RE_RANKING: False
+  SEQ_LEN: 4
+  WEIGHT: 
+stage1weight: 
+2024-11-27 11:20:50,347 transreid.train INFO: start training
+2024-11-27 11:20:50,357 transreid.train INFO: model: build_transformer(
+  (classifier): Linear(in_features=768, out_features=150, bias=False)
+  (classifier_proj): Linear(in_features=512, out_features=150, bias=False)
+  (bottleneck): BatchNorm1d(768, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (bottleneck_proj): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (image_encoder): VisionTransformer_OURS(
+    (conv1): Conv2d(3, 768, kernel_size=(16, 16), stride=(16, 16), bias=False)
+    (ln_pre): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+    (transformer): Transformer(
+      (resblocks): Sequential(
+        (0): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (1): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (2): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (3): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (4): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (5): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (6): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (7): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (8): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (9): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (10): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (11): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+      )
+      (CFSA_S_layers): ModuleList(
+        (0): CLIPLayer_Spatial(
+          (self_attn): CLIPAttention(
+            (k_proj): Linear(in_features=768, out_features=768, bias=True)
+            (v_proj): Linear(in_features=768, out_features=768, bias=True)
+            (q_proj): Linear(in_features=768, out_features=768, bias=True)
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (layer_norm1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): CLIPMLP(
+            (activation_fn): QuickGELUActivation()
+            (fc1): Linear(in_features=768, out_features=3072, bias=True)
+            (fc2): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (layer_norm2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (proj_drop): Dropout(p=0, inplace=False)
+          (dropout_layer): Identity()
+        )
+        (1-3): 3 x CLIPLayer_Spatial(
+          (self_attn): CLIPAttention(
+            (k_proj): Linear(in_features=768, out_features=768, bias=True)
+            (v_proj): Linear(in_features=768, out_features=768, bias=True)
+            (q_proj): Linear(in_features=768, out_features=768, bias=True)
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (layer_norm1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): CLIPMLP(
+            (activation_fn): QuickGELUActivation()
+            (fc1): Linear(in_features=768, out_features=3072, bias=True)
+            (fc2): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (layer_norm2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (proj_drop): Dropout(p=0, inplace=False)
+          (dropout_layer): DropPath()
+        )
+      )
+      (CFSA_T_layers): ModuleList(
+        (0): CLIPLayer_AttnTime(
+          (self_attn): CLIPAttention(
+            (k_proj): Linear(in_features=768, out_features=768, bias=True)
+            (v_proj): Linear(in_features=768, out_features=768, bias=True)
+            (q_proj): Linear(in_features=768, out_features=768, bias=True)
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (layer_norm1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (proj_drop): Dropout(p=0, inplace=False)
+          (dropout_layer): Identity()
+          (temporal_fc): Linear(in_features=768, out_features=768, bias=True)
+        )
+        (1-3): 3 x CLIPLayer_AttnTime(
+          (self_attn): CLIPAttention(
+            (k_proj): Linear(in_features=768, out_features=768, bias=True)
+            (v_proj): Linear(in_features=768, out_features=768, bias=True)
+            (q_proj): Linear(in_features=768, out_features=768, bias=True)
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (layer_norm1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (proj_drop): Dropout(p=0, inplace=False)
+          (dropout_layer): DropPath()
+          (temporal_fc): Linear(in_features=768, out_features=768, bias=True)
+        )
+      )
+      (patch_embedding): Conv2d(3, 768, kernel_size=(32, 32), stride=(32, 32), bias=False)
+      (pre_layrnorm): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+      (post_layernorm): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+      (CFSA_time_embed): Embedding(64, 768)
+      (drop_after_pos): Dropout(p=0, inplace=False)
+      (drop_after_time): Dropout(p=0, inplace=False)
+    )
+    (ln_post): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+  )
+  (prompt_learner): PromptLearner_Learnable()
+  (text_encoder): TextEncoder(
+    (transformer): Transformer(
+      (resblocks): Sequential(
+        (0): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (1): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (2): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (3): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (4): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (5): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (6): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (7): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (8): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (9): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (10): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (11): CustomResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+      )
+      (CFSA_S_layers): ModuleList(
+        (0): CLIPLayer_Spatial(
+          (self_attn): CLIPAttention(
+            (k_proj): Linear(in_features=768, out_features=768, bias=True)
+            (v_proj): Linear(in_features=768, out_features=768, bias=True)
+            (q_proj): Linear(in_features=768, out_features=768, bias=True)
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (layer_norm1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): CLIPMLP(
+            (activation_fn): QuickGELUActivation()
+            (fc1): Linear(in_features=768, out_features=3072, bias=True)
+            (fc2): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (layer_norm2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (proj_drop): Dropout(p=0, inplace=False)
+          (dropout_layer): Identity()
+        )
+        (1-3): 3 x CLIPLayer_Spatial(
+          (self_attn): CLIPAttention(
+            (k_proj): Linear(in_features=768, out_features=768, bias=True)
+            (v_proj): Linear(in_features=768, out_features=768, bias=True)
+            (q_proj): Linear(in_features=768, out_features=768, bias=True)
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (layer_norm1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): CLIPMLP(
+            (activation_fn): QuickGELUActivation()
+            (fc1): Linear(in_features=768, out_features=3072, bias=True)
+            (fc2): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (layer_norm2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (proj_drop): Dropout(p=0, inplace=False)
+          (dropout_layer): DropPath()
+        )
+      )
+      (CFSA_T_layers): ModuleList(
+        (0): CLIPLayer_AttnTime(
+          (self_attn): CLIPAttention(
+            (k_proj): Linear(in_features=768, out_features=768, bias=True)
+            (v_proj): Linear(in_features=768, out_features=768, bias=True)
+            (q_proj): Linear(in_features=768, out_features=768, bias=True)
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (layer_norm1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (proj_drop): Dropout(p=0, inplace=False)
+          (dropout_layer): Identity()
+          (temporal_fc): Linear(in_features=768, out_features=768, bias=True)
+        )
+        (1-3): 3 x CLIPLayer_AttnTime(
+          (self_attn): CLIPAttention(
+            (k_proj): Linear(in_features=768, out_features=768, bias=True)
+            (v_proj): Linear(in_features=768, out_features=768, bias=True)
+            (q_proj): Linear(in_features=768, out_features=768, bias=True)
+            (out_proj): Linear(in_features=768, out_features=768, bias=True)
+          )
+          (layer_norm1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (proj_drop): Dropout(p=0, inplace=False)
+          (dropout_layer): DropPath()
+          (temporal_fc): Linear(in_features=768, out_features=768, bias=True)
+        )
+      )
+      (patch_embedding): Conv2d(3, 768, kernel_size=(32, 32), stride=(32, 32), bias=False)
+      (pre_layrnorm): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+      (post_layernorm): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+      (CFSA_time_embed): Embedding(64, 768)
+      (drop_after_pos): Dropout(p=0, inplace=False)
+      (drop_after_time): Dropout(p=0, inplace=False)
+    )
+    (ln_final): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+  )
+)
+2024-11-27 11:21:52,947 transreid.train INFO: Stage1 running time: 0:01:02.591757
+2024-11-27 11:21:52,970 transreid.train INFO: start training
+2024-11-27 11:22:14,691 transreid.train INFO: Epoch 1 done. Time per batch: 0.583[s] Speed: 27.4[samples/s]
+2024-11-27 11:22:35,308 transreid.train INFO: Epoch 2 done. Time per batch: 0.557[s] Speed: 28.7[samples/s]
+2024-11-27 11:22:56,012 transreid.train INFO: Epoch 3 done. Time per batch: 0.560[s] Speed: 28.6[samples/s]
+2024-11-27 11:23:16,919 transreid.train INFO: Epoch 4 done. Time per batch: 0.565[s] Speed: 28.3[samples/s]
+2024-11-27 11:23:37,679 transreid.train INFO: Epoch 5 done. Time per batch: 0.561[s] Speed: 28.5[samples/s]
+2024-11-27 11:23:58,369 transreid.train INFO: Epoch 6 done. Time per batch: 0.559[s] Speed: 28.6[samples/s]
+2024-11-27 11:24:19,210 transreid.train INFO: Epoch 7 done. Time per batch: 0.563[s] Speed: 28.4[samples/s]
+2024-11-27 11:24:40,142 transreid.train INFO: Epoch 8 done. Time per batch: 0.566[s] Speed: 28.3[samples/s]
+2024-11-27 11:25:00,933 transreid.train INFO: Epoch 9 done. Time per batch: 0.562[s] Speed: 28.5[samples/s]
+2024-11-27 11:25:21,836 transreid.train INFO: Epoch 10 done. Time per batch: 0.565[s] Speed: 28.3[samples/s]
+2024-11-27 11:25:39,063 transreid.train INFO: mAP: 58.36% | R-1  : 47.33% | R-5  : 72.00% | R-10 : 82.67% | R-20 : 90.00%
+2024-11-27 11:25:59,742 transreid.train INFO: Epoch 11 done. Time per batch: 0.559[s] Speed: 28.6[samples/s]
+2024-11-27 11:26:20,351 transreid.train INFO: Epoch 12 done. Time per batch: 0.557[s] Speed: 28.7[samples/s]
+2024-11-27 11:26:41,170 transreid.train INFO: Epoch 13 done. Time per batch: 0.563[s] Speed: 28.4[samples/s]
+2024-11-27 11:27:02,010 transreid.train INFO: Epoch 14 done. Time per batch: 0.563[s] Speed: 28.4[samples/s]
+2024-11-27 11:27:22,620 transreid.train INFO: Epoch 15 done. Time per batch: 0.557[s] Speed: 28.7[samples/s]
+2024-11-27 11:27:43,648 transreid.train INFO: Epoch 16 done. Time per batch: 0.568[s] Speed: 28.2[samples/s]
+2024-11-27 11:28:04,547 transreid.train INFO: Epoch 17 done. Time per batch: 0.565[s] Speed: 28.3[samples/s]
+2024-11-27 11:28:25,865 transreid.train INFO: Epoch 18 done. Time per batch: 0.576[s] Speed: 27.8[samples/s]
+2024-11-27 11:28:46,964 transreid.train INFO: Epoch 19 done. Time per batch: 0.570[s] Speed: 28.1[samples/s]
+2024-11-27 11:29:07,809 transreid.train INFO: Epoch 20 done. Time per batch: 0.563[s] Speed: 28.4[samples/s]
+2024-11-27 11:29:24,460 transreid.train INFO: mAP: 82.16% | R-1  : 74.00% | R-5  : 94.00% | R-10 : 97.33% | R-20 : 98.00%
+2024-11-27 11:29:45,253 transreid.train INFO: Epoch 21 done. Time per batch: 0.562[s] Speed: 28.5[samples/s]
+2024-11-27 11:30:06,115 transreid.train INFO: Epoch 22 done. Time per batch: 0.564[s] Speed: 28.4[samples/s]
+2024-11-27 11:30:26,777 transreid.train INFO: Epoch 23 done. Time per batch: 0.558[s] Speed: 28.7[samples/s]
+2024-11-27 11:30:47,380 transreid.train INFO: Epoch 24 done. Time per batch: 0.557[s] Speed: 28.7[samples/s]
+2024-11-27 11:31:08,008 transreid.train INFO: Epoch 25 done. Time per batch: 0.557[s] Speed: 28.7[samples/s]
+2024-11-27 11:31:28,552 transreid.train INFO: Epoch 26 done. Time per batch: 0.555[s] Speed: 28.8[samples/s]
+2024-11-27 11:31:49,181 transreid.train INFO: Epoch 27 done. Time per batch: 0.558[s] Speed: 28.7[samples/s]
+2024-11-27 11:32:10,103 transreid.train INFO: Epoch 28 done. Time per batch: 0.565[s] Speed: 28.3[samples/s]
+2024-11-27 11:32:31,038 transreid.train INFO: Epoch 29 done. Time per batch: 0.566[s] Speed: 28.3[samples/s]
+2024-11-27 11:32:51,954 transreid.train INFO: Epoch 30 done. Time per batch: 0.565[s] Speed: 28.3[samples/s]
+2024-11-27 11:33:08,606 transreid.train INFO: mAP: 91.89% | R-1  : 88.00% | R-5  : 96.67% | R-10 : 98.00% | R-20 : 99.33%
+2024-11-27 11:33:29,692 transreid.train INFO: Epoch 31 done. Time per batch: 0.570[s] Speed: 28.1[samples/s]
+2024-11-27 11:33:50,540 transreid.train INFO: Epoch 32 done. Time per batch: 0.563[s] Speed: 28.4[samples/s]
+2024-11-27 11:34:11,837 transreid.train INFO: Epoch 33 done. Time per batch: 0.576[s] Speed: 27.8[samples/s]
+2024-11-27 11:34:33,039 transreid.train INFO: Epoch 34 done. Time per batch: 0.573[s] Speed: 27.9[samples/s]
+2024-11-27 11:34:53,870 transreid.train INFO: Epoch 35 done. Time per batch: 0.563[s] Speed: 28.4[samples/s]
+2024-11-27 11:35:14,798 transreid.train INFO: Epoch 36 done. Time per batch: 0.566[s] Speed: 28.3[samples/s]
+2024-11-27 11:35:35,950 transreid.train INFO: Epoch 37 done. Time per batch: 0.572[s] Speed: 28.0[samples/s]
+2024-11-27 11:35:57,269 transreid.train INFO: Epoch 38 done. Time per batch: 0.576[s] Speed: 27.8[samples/s]
+2024-11-27 11:36:18,602 transreid.train INFO: Epoch 39 done. Time per batch: 0.577[s] Speed: 27.8[samples/s]
+2024-11-27 11:36:39,553 transreid.train INFO: Epoch 40 done. Time per batch: 0.566[s] Speed: 28.3[samples/s]
+2024-11-27 11:36:53,677 transreid.train INFO: mAP: 92.86% | R-1  : 88.00% | R-5  : 98.67% | R-10 : 100.00% | R-20 : 100.00%
+2024-11-27 11:37:14,783 transreid.train INFO: Epoch 41 done. Time per batch: 0.570[s] Speed: 28.0[samples/s]
+2024-11-27 11:37:35,815 transreid.train INFO: Epoch 42 done. Time per batch: 0.568[s] Speed: 28.1[samples/s]
+2024-11-27 11:37:56,760 transreid.train INFO: Epoch 43 done. Time per batch: 0.566[s] Speed: 28.3[samples/s]
+2024-11-27 11:38:17,570 transreid.train INFO: Epoch 44 done. Time per batch: 0.562[s] Speed: 28.4[samples/s]
+2024-11-27 11:38:38,663 transreid.train INFO: Epoch 45 done. Time per batch: 0.570[s] Speed: 28.1[samples/s]
+2024-11-27 11:38:59,668 transreid.train INFO: Epoch 46 done. Time per batch: 0.568[s] Speed: 28.2[samples/s]
+2024-11-27 11:39:20,799 transreid.train INFO: Epoch 47 done. Time per batch: 0.571[s] Speed: 28.0[samples/s]
+2024-11-27 11:39:41,936 transreid.train INFO: Epoch 48 done. Time per batch: 0.571[s] Speed: 28.0[samples/s]
+2024-11-27 11:40:03,288 transreid.train INFO: Epoch 49 done. Time per batch: 0.577[s] Speed: 27.7[samples/s]
+2024-11-27 11:40:24,215 transreid.train INFO: Epoch 50 done. Time per batch: 0.566[s] Speed: 28.3[samples/s]
+2024-11-27 11:40:40,626 transreid.train INFO: mAP: 95.64% | R-1  : 92.67% | R-5  : 98.67% | R-10 : 100.00% | R-20 : 100.00%
+2024-11-27 11:41:01,584 transreid.train INFO: Epoch 51 done. Time per batch: 0.566[s] Speed: 28.2[samples/s]
+2024-11-27 11:41:22,724 transreid.train INFO: Epoch 52 done. Time per batch: 0.571[s] Speed: 28.0[samples/s]
+2024-11-27 11:41:43,798 transreid.train INFO: Epoch 53 done. Time per batch: 0.570[s] Speed: 28.1[samples/s]
+2024-11-27 11:42:04,775 transreid.train INFO: Epoch 54 done. Time per batch: 0.567[s] Speed: 28.2[samples/s]
+2024-11-27 11:42:26,009 transreid.train INFO: Epoch 55 done. Time per batch: 0.574[s] Speed: 27.9[samples/s]
+2024-11-27 11:42:47,058 transreid.train INFO: Epoch 56 done. Time per batch: 0.569[s] Speed: 28.1[samples/s]
+2024-11-27 11:43:08,113 transreid.train INFO: Epoch 57 done. Time per batch: 0.569[s] Speed: 28.1[samples/s]
+2024-11-27 11:43:29,179 transreid.train INFO: Epoch 58 done. Time per batch: 0.569[s] Speed: 28.1[samples/s]
+2024-11-27 11:43:50,097 transreid.train INFO: Epoch 59 done. Time per batch: 0.565[s] Speed: 28.3[samples/s]
+2024-11-27 11:44:11,161 transreid.train INFO: Epoch 60 done. Time per batch: 0.569[s] Speed: 28.1[samples/s]
+2024-11-27 11:44:22,506 transreid.train INFO: mAP: 95.63% | R-1  : 92.67% | R-5  : 98.67% | R-10 : 100.00% | R-20 : 100.00%
+2024-11-27 11:44:43,438 transreid.train INFO: Epoch 61 done. Time per batch: 0.566[s] Speed: 28.3[samples/s]
+2024-11-27 11:45:04,674 transreid.train INFO: Epoch 62 done. Time per batch: 0.574[s] Speed: 27.9[samples/s]
+2024-11-27 11:45:25,617 transreid.train INFO: Epoch 63 done. Time per batch: 0.566[s] Speed: 28.3[samples/s]
+2024-11-27 11:45:46,706 transreid.train INFO: Epoch 64 done. Time per batch: 0.570[s] Speed: 28.1[samples/s]
+2024-11-27 11:46:07,669 transreid.train INFO: Epoch 65 done. Time per batch: 0.567[s] Speed: 28.2[samples/s]
+2024-11-27 11:46:28,890 transreid.train INFO: Epoch 66 done. Time per batch: 0.574[s] Speed: 27.9[samples/s]
+2024-11-27 11:46:49,807 transreid.train INFO: Epoch 67 done. Time per batch: 0.565[s] Speed: 28.3[samples/s]
+2024-11-27 11:47:10,746 transreid.train INFO: Epoch 68 done. Time per batch: 0.566[s] Speed: 28.3[samples/s]
+2024-11-27 11:47:31,773 transreid.train INFO: Epoch 69 done. Time per batch: 0.568[s] Speed: 28.2[samples/s]
+2024-11-27 11:47:52,624 transreid.train INFO: Epoch 70 done. Time per batch: 0.564[s] Speed: 28.4[samples/s]
+2024-11-27 11:48:09,241 transreid.train INFO: mAP: 95.96% | R-1  : 93.33% | R-5  : 98.67% | R-10 : 100.00% | R-20 : 100.00%
+2024-11-27 11:48:30,087 transreid.train INFO: Epoch 71 done. Time per batch: 0.563[s] Speed: 28.4[samples/s]
+2024-11-27 11:48:51,155 transreid.train INFO: Epoch 72 done. Time per batch: 0.569[s] Speed: 28.1[samples/s]
+2024-11-27 11:49:12,170 transreid.train INFO: Epoch 73 done. Time per batch: 0.568[s] Speed: 28.2[samples/s]
+2024-11-27 11:49:33,246 transreid.train INFO: Epoch 74 done. Time per batch: 0.570[s] Speed: 28.1[samples/s]
+2024-11-27 11:49:54,347 transreid.train INFO: Epoch 75 done. Time per batch: 0.570[s] Speed: 28.1[samples/s]
+2024-11-27 11:50:15,468 transreid.train INFO: Epoch 76 done. Time per batch: 0.571[s] Speed: 28.0[samples/s]
+2024-11-27 11:50:36,648 transreid.train INFO: Epoch 77 done. Time per batch: 0.572[s] Speed: 28.0[samples/s]
+2024-11-27 11:50:57,533 transreid.train INFO: Epoch 78 done. Time per batch: 0.564[s] Speed: 28.3[samples/s]
+2024-11-27 11:51:18,674 transreid.train INFO: Epoch 79 done. Time per batch: 0.571[s] Speed: 28.0[samples/s]
+2024-11-27 11:51:39,907 transreid.train INFO: Epoch 80 done. Time per batch: 0.574[s] Speed: 27.9[samples/s]
+2024-11-27 11:51:51,329 transreid.train INFO: mAP: 95.95% | R-1  : 93.33% | R-5  : 98.67% | R-10 : 100.00% | R-20 : 100.00%
+2024-11-27 11:52:12,384 transreid.train INFO: Epoch 81 done. Time per batch: 0.569[s] Speed: 28.1[samples/s]
+2024-11-27 11:52:33,697 transreid.train INFO: Epoch 82 done. Time per batch: 0.576[s] Speed: 27.8[samples/s]
+2024-11-27 11:52:54,677 transreid.train INFO: Epoch 83 done. Time per batch: 0.567[s] Speed: 28.2[samples/s]
+2024-11-27 11:53:15,827 transreid.train INFO: Epoch 84 done. Time per batch: 0.572[s] Speed: 28.0[samples/s]
+2024-11-27 11:53:36,770 transreid.train INFO: Epoch 85 done. Time per batch: 0.566[s] Speed: 28.3[samples/s]
+2024-11-27 11:53:57,914 transreid.train INFO: Epoch 86 done. Time per batch: 0.571[s] Speed: 28.0[samples/s]
+2024-11-27 11:54:18,963 transreid.train INFO: Epoch 87 done. Time per batch: 0.569[s] Speed: 28.1[samples/s]
+2024-11-27 11:54:40,129 transreid.train INFO: Epoch 88 done. Time per batch: 0.572[s] Speed: 28.0[samples/s]
+2024-11-27 11:55:01,131 transreid.train INFO: Epoch 89 done. Time per batch: 0.568[s] Speed: 28.2[samples/s]
+2024-11-27 11:55:22,129 transreid.train INFO: Epoch 90 done. Time per batch: 0.568[s] Speed: 28.2[samples/s]
+2024-11-27 11:55:38,426 transreid.train INFO: mAP: 96.30% | R-1  : 94.00% | R-5  : 98.67% | R-10 : 100.00% | R-20 : 100.00%
+2024-11-27 11:55:59,562 transreid.train INFO: Epoch 91 done. Time per batch: 0.571[s] Speed: 28.0[samples/s]
+2024-11-27 11:56:20,621 transreid.train INFO: Epoch 92 done. Time per batch: 0.569[s] Speed: 28.1[samples/s]
+2024-11-27 11:56:41,920 transreid.train INFO: Epoch 93 done. Time per batch: 0.576[s] Speed: 27.8[samples/s]
+2024-11-27 11:57:03,012 transreid.train INFO: Epoch 94 done. Time per batch: 0.570[s] Speed: 28.1[samples/s]
+2024-11-27 11:57:23,990 transreid.train INFO: Epoch 95 done. Time per batch: 0.567[s] Speed: 28.2[samples/s]
+2024-11-27 11:57:45,176 transreid.train INFO: Epoch 96 done. Time per batch: 0.573[s] Speed: 27.9[samples/s]
+2024-11-27 11:58:06,258 transreid.train INFO: Epoch 97 done. Time per batch: 0.570[s] Speed: 28.1[samples/s]
+2024-11-27 11:58:26,848 transreid.train INFO: Epoch 98 done. Time per batch: 0.556[s] Speed: 28.8[samples/s]
+2024-11-27 11:58:47,828 transreid.train INFO: Epoch 99 done. Time per batch: 0.567[s] Speed: 28.2[samples/s]
+2024-11-27 11:59:08,500 transreid.train INFO: Epoch 100 done. Time per batch: 0.559[s] Speed: 28.6[samples/s]
+2024-11-27 11:59:19,991 transreid.train INFO: mAP: 96.28% | R-1  : 94.00% | R-5  : 98.67% | R-10 : 100.00% | R-20 : 100.00%
+2024-11-27 11:59:40,843 transreid.train INFO: Epoch 101 done. Time per batch: 0.564[s] Speed: 28.4[samples/s]
+2024-11-27 12:00:01,506 transreid.train INFO: Epoch 102 done. Time per batch: 0.558[s] Speed: 28.7[samples/s]
+2024-11-27 12:00:22,152 transreid.train INFO: Epoch 103 done. Time per batch: 0.558[s] Speed: 28.7[samples/s]
+2024-11-27 12:00:43,050 transreid.train INFO: Epoch 104 done. Time per batch: 0.565[s] Speed: 28.3[samples/s]
+2024-11-27 12:01:03,763 transreid.train INFO: Epoch 105 done. Time per batch: 0.560[s] Speed: 28.6[samples/s]
+2024-11-27 12:01:24,389 transreid.train INFO: Epoch 106 done. Time per batch: 0.557[s] Speed: 28.7[samples/s]
+2024-11-27 12:01:45,053 transreid.train INFO: Epoch 107 done. Time per batch: 0.558[s] Speed: 28.6[samples/s]
+2024-11-27 12:02:05,733 transreid.train INFO: Epoch 108 done. Time per batch: 0.559[s] Speed: 28.6[samples/s]
+2024-11-27 12:02:26,446 transreid.train INFO: Epoch 109 done. Time per batch: 0.560[s] Speed: 28.6[samples/s]
+2024-11-27 12:02:47,227 transreid.train INFO: Epoch 110 done. Time per batch: 0.562[s] Speed: 28.5[samples/s]
+2024-11-27 12:02:58,291 transreid.train INFO: mAP: 96.29% | R-1  : 94.00% | R-5  : 98.67% | R-10 : 100.00% | R-20 : 100.00%
+2024-11-27 12:03:19,046 transreid.train INFO: Epoch 111 done. Time per batch: 0.561[s] Speed: 28.5[samples/s]
+2024-11-27 12:03:39,689 transreid.train INFO: Epoch 112 done. Time per batch: 0.558[s] Speed: 28.7[samples/s]
+2024-11-27 12:04:00,488 transreid.train INFO: Epoch 113 done. Time per batch: 0.562[s] Speed: 28.5[samples/s]
+2024-11-27 12:04:21,042 transreid.train INFO: Epoch 114 done. Time per batch: 0.555[s] Speed: 28.8[samples/s]
+2024-11-27 12:04:41,778 transreid.train INFO: Epoch 115 done. Time per batch: 0.560[s] Speed: 28.6[samples/s]
+2024-11-27 12:05:02,377 transreid.train INFO: Epoch 116 done. Time per batch: 0.557[s] Speed: 28.7[samples/s]
+2024-11-27 12:05:22,956 transreid.train INFO: Epoch 117 done. Time per batch: 0.556[s] Speed: 28.8[samples/s]
+2024-11-27 12:05:43,756 transreid.train INFO: Epoch 118 done. Time per batch: 0.562[s] Speed: 28.5[samples/s]
+2024-11-27 12:06:04,500 transreid.train INFO: Epoch 119 done. Time per batch: 0.561[s] Speed: 28.5[samples/s]
+2024-11-27 12:06:25,224 transreid.train INFO: Epoch 120 done. Time per batch: 0.560[s] Speed: 28.6[samples/s]
+2024-11-27 12:06:38,795 transreid.train INFO: mAP: 96.29% | R-1  : 94.00% | R-5  : 98.67% | R-10 : 100.00% | R-20 : 100.00%
+2024-11-27 12:06:38,795 transreid.train INFO: Total running time: 0:44:45.818617
